@@ -2,6 +2,10 @@ import torch.nn as nn
 
 
 class BERTSPC(nn.Module):
+    """Feeds `[CLS] + context + [SEP] + target + [SEP]`
+    into the basic BERT model for sentence pair classification task.
+    """
+
     def __init__(self, bert, config):
         super(BERTSPC, self).__init__()
         self.bert = bert

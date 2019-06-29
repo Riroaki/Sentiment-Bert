@@ -14,10 +14,12 @@
 
 ### Pretrained model
 
-Please read `README.md` under `bert` directory before you run the model.
+Please read `README.md` under `bert` directory before you run the scripts.
 
 ## Run
 
 Just run `python main.py`.
 
 Alter configurations in `config.py`.
+
+Currently consists `BERT SPC` and `BERT AEN` models.

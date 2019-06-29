@@ -64,9 +64,15 @@ class SentimentDataset(Dataset):
                         aspect_len + 1))
             bert_segments_ids = tokenizer.align(bert_segments_ids,
                                                 tokenizer.max_seq_len)
+            text_raw_bert_indices = tokenizer.text_to_sequence(
+                ' '.join(['[CLS]', text_left, aspect, text_right, '[SEP]']))
+            aspect_bert_indices = tokenizer.text_to_sequence(
+                ' '.join(['[CLS]', aspect, '[SEP]']))
             data = {
                 'text_bert_indices': text_bert_indices,
                 'bert_segments_ids': bert_segments_ids,
+                'text_raw_bert_indices': text_raw_bert_indices,
+                'aspect_bert_indices': aspect_bert_indices,
                 'polarity': polarity,
             }
             all_data.append(data)

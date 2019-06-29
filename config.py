@@ -13,10 +13,16 @@ CONFIG = {
     'dataset': 'laptop',  # Other choices: ['restaurant', 'laptop']
     'train_file': 'data/laptop/Laptops_Train.xml.seg',
     'test_file': 'data/laptop/Laptops_Test_Gold.xml.seg',
+    # Choose model
+    'model': 'bert_aen',  # Other choice: ['bert_spc']
+    'log_file': 'logs/{}-{}-{}.log'.format('bert_aen', 'twitter',
+                                           strftime("%y%m%d-%H%M",
+                                                    localtime())),
     # Pretrained model parameters
     'bert_vocab_path': 'bert/vocab.txt',
     'bert_model_path': 'bert/uncased.tar.gz',
     'bert_dim': 768,
+    'hidden_dim': 300,
     'polarities_dim': 3,
     # Parameters of model
     'dropout_rate': 0.1,
@@ -33,9 +39,6 @@ CONFIG = {
     'ridge_reg': 0.01,
     # Device parameters
     'device': torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
-    # Log file
-    'log_file': 'logs/{}-{}-{}.log'.format('bert', 'twitter',
-                                           strftime("%y%m%d-%H%M", localtime()))
 }
 
 # Initialize directories
@@ -51,7 +54,7 @@ CONFIG = DotDict(CONFIG)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler(sys.stdout))
-logger.addHandler(logging.FileHandler(CONFIG['log_file']))
+logger.addHandler(logging.FileHandler(CONFIG.log_file))
 
 # Random seed
 seed = int(time())

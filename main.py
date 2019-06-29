@@ -5,7 +5,21 @@ from torch.utils.data import random_split, DataLoader, Dataset, ConcatDataset
 from pytorch_pretrained_bert import BertModel
 from config import CONFIG, logger
 from dataset import Tokenizer, SentimentDataset
-from bert_spc import BERTSPC
+from models import BERTSPC
+from models import BERTAEN
+
+
+# Define different models corresponding to names here.
+model_dict = {
+    'bert_spc': BERTSPC,
+    'bert_aen': BERTAEN
+}
+
+# Define input column names for different models here.
+input_cols = {
+    'bert_spc': ['text_bert_indices', 'bert_segments_ids'],
+    'bert_aen': ['text_raw_bert_indices', 'aspect_bert_indices']
+}
 
 
 def split_k_fold(data: Dataset, k: int) -> tuple:
@@ -43,7 +57,7 @@ def train(model: nn.Module, criterion: nn.Module, optimizer: nn.Module,
             # clear gradient accumulators
             optimizer.zero_grad()
             inputs = [sample_batched[col].to(CONFIG.device) for col in
-                      ['text_bert_indices', 'bert_segments_ids']]
+                      input_cols[CONFIG.model]]
             outputs = model(inputs)
             targets = sample_batched['polarity'].to(CONFIG.device)
 
@@ -66,7 +80,7 @@ def train(model: nn.Module, criterion: nn.Module, optimizer: nn.Module,
         # Save best model parameters: the one with highest accuracy
         if valid_accuracy > max_valid_accuracy:
             max_valid_accuracy = valid_accuracy
-            path = 'state_dict/{}'.format(CONFIG.dataset)
+            path = 'state_dict/{}_{}'.format(CONFIG.model, CONFIG.dataset)
             torch.save(model.state_dict(), path)
             logger.info('>> saved: {}'.format(path))
     return path
@@ -80,7 +94,7 @@ def evaluate(model: nn.Module, data_loader: DataLoader) -> float:
     with torch.no_grad():
         for batch, sample_batched in enumerate(data_loader):
             inputs = [sample_batched[col].to(CONFIG.device) for col in
-                      ['text_bert_indices', 'bert_segments_ids']]
+                      input_cols[CONFIG.model]]
             targets = sample_batched['polarity'].to(CONFIG.device)
             outputs = model(inputs)
             correct += (torch.argmax(outputs, -1) == targets).sum().item()
@@ -101,7 +115,7 @@ def main():
     # Build tokenizer and model
     tokenizer = Tokenizer(CONFIG.max_seq_len, CONFIG.bert_vocab_path)
     bert = BertModel.from_pretrained(CONFIG.bert_model_path)
-    model = BERTSPC(bert, CONFIG).to(CONFIG.device)
+    model = model_dict[CONFIG.model](bert, CONFIG).to(CONFIG.device)
 
     # Tokenize data
     train_data = SentimentDataset(CONFIG.train_file, tokenizer)
