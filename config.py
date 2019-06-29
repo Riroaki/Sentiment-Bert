@@ -20,11 +20,12 @@ CONFIG = {
     'polarities_dim': 3,
     # Parameters of model
     'dropout_rate': 0.1,
-    'num_epoch': 1,
+    'num_epoch': 5,
     'batch_size': 64,
     'valid_ratio': 0.3,
     'max_seq_len': 80,
     'log_step': 5,
+    'cross_val_fold': 10,
     # Initializer and optimizer
     'initializer': nn.init.xavier_normal_,
     'optimizer': optim.Adam,
