@@ -14,8 +14,8 @@ CONFIG = {
     'train_file': 'data/laptop/Laptops_Train.xml.seg',
     'test_file': 'data/laptop/Laptops_Test_Gold.xml.seg',
     # Choose model
-    'model': 'bert_aen',  # Other choice: ['bert_spc']
-    'log_file': 'logs/{}-{}-{}.log'.format('bert_aen', 'twitter',
+    'model': 'bert_spc',  # Choices: ['bert_aen', 'bert_spc']
+    'log_file': 'logs/{}-{}-{}.log'.format('bert_spc', 'laptop',
                                            strftime("%y%m%d-%H%M",
                                                     localtime())),
     # Pretrained model parameters
